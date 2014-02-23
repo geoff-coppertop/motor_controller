@@ -30,7 +30,7 @@ void motor_controller::increaseSpeed(void)
   }
   else
   {
-    ChangeSpeed(iSpd);
+    changeSpeed(iSpd);
   }
 }
 
@@ -45,7 +45,7 @@ void motor_controller::decreaseSpeed(void)
   }
   else
   {
-    ChangeSpeed(iSpd);
+    changeSpeed(iSpd);
   }
 }
 
@@ -72,11 +72,11 @@ void motor_controller::setSpeed(int iSpd_)
     
     if(iSpdDelta > 0)
     {
-      IncrSpeed();
+      increaseSpeed();
     }
     else if(iSpdDelta < 0)
     {
-      DecrSpeed();
+      decreaseSpeed();
     }
     else
     {
@@ -87,12 +87,12 @@ void motor_controller::setSpeed(int iSpd_)
 
 void motor_controller::stop(void)
 {
-  Speed(0);
+  setSpeed(0);
 }
 
 void motor_controller::emergencyStop(void)
 {
-  ChangeSpeed(0);
+  changeSpeed(0);
 }
 
 void motor_controller::changeSpeed(int iSpd_)
@@ -111,7 +111,7 @@ void motor_controller::changeSpeed(int iSpd_)
     // Write direction pins so the motor is going forward
     digitalWrite(iDirPin, HIGH);
   }
-  else if(iSpd < 0)
+  else if(iSpd_ < 0)
   {
     // Write direction pin so the motor is going backward
     digitalWrite(iDirPin, LOW);
@@ -128,5 +128,4 @@ void motor_controller::changeSpeed(int iSpd_)
 int motor_controller::getSpeed(void)
 {
 	return iSpd;
-}
 }
