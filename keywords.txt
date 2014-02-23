@@ -1,0 +1,6 @@
+motor_controller	KEYWORD1
+Stop				KEYWORD2
+EStop				KEYWORD2
+IncrSpeed			KEYWORD2
+DecrSpeed			KEYWORD2
+Speed				KEYWORD2
