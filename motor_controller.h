@@ -13,11 +13,12 @@ class motor_controller
   public:
     motor_controller(int iPWMPin_, int iDirPin_, int iMaxPWM_, int iDelay_);
     
-    void Stop(void);
-    void EStop(void);
-    void IncrSpeed(void);
-    void DecrSpeed(void);
-    void Speed(int iSpd_);
+    void stop(void);
+    void emergencyStop(void);
+    void increaseSpeed(void);
+    void decreaseSpeed(void);
+    void setSpeed(int iSpd_);
+    int getSpeed(void);
     
   private:
     int iPWMPin;
@@ -27,7 +28,7 @@ class motor_controller
     
     double dSpdPWMScale;
     
-    void ChangeSpeed(int iSpd_);
+    void changeSpeed(int iSpd_);
 };
 
 #endif // motor_controller_h

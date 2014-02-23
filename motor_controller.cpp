@@ -19,7 +19,7 @@ motor_controller::motor_controller(int iPWMPin_, int iDirPin_, int iMaxPWM_, int
   pinMode(iDirPin_, OUTPUT);
 }
 
-void motor_controller::IncrSpeed(void)
+void motor_controller::increaseSpeed(void)
 {
   iSpd++;
   
@@ -34,7 +34,7 @@ void motor_controller::IncrSpeed(void)
   }
 }
 
-void motor_controller::DecrSpeed(void)
+void motor_controller::decreaseSpeed(void)
 {
   iSpd--;
   
@@ -49,7 +49,7 @@ void motor_controller::DecrSpeed(void)
   }
 }
 
-void motor_controller::Speed(int iSpd_)
+void motor_controller::setSpeed(int iSpd_)
 {
   int iSpdDelta = iSpd_ - iSpd;
   
@@ -85,17 +85,17 @@ void motor_controller::Speed(int iSpd_)
   } while(iSpdDelta != 0);
 }
 
-void motor_controller::Stop(void)
+void motor_controller::stop(void)
 {
   Speed(0);
 }
 
-void motor_controller::EStop(void)
+void motor_controller::emergencyStop(void)
 {
   ChangeSpeed(0);
 }
 
-void motor_controller::ChangeSpeed(int iSpd_)
+void motor_controller::changeSpeed(int iSpd_)
 {
   int iPWMVal = iSpd_ * dSpdPWMScale;
   
@@ -123,4 +123,10 @@ void motor_controller::ChangeSpeed(int iSpd_)
   
   // output the current pwm
   analogWrite(iPWMPin, iPWMVal);
+}
+
+int motor_controller::getSpeed(void)
+{
+	return iSpd;
+}
 }

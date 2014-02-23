@@ -1,6 +1,7 @@
 motor_controller	KEYWORD1
-Stop				KEYWORD2
-EStop				KEYWORD2
-IncrSpeed			KEYWORD2
-DecrSpeed			KEYWORD2
-Speed				KEYWORD2
+stop				KEYWORD2
+emergencyStop		KEYWORD2
+increaseSpeed		KEYWORD2
+decreaseSpeed		KEYWORD2
+setSpeed			KEYWORD2
+getSpeed			KEYWORD2
