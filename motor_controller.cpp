@@ -8,81 +8,46 @@
 
 motor_controller::motor_controller(int iPWMPin_, int iDirPin_, int iMaxPWM_, int iDelay_)
 {
-  iSpd = 0;
+  iCurrentSpd = 0;
+  iSetSpd = 0;
+
   iPWMPin = iPWMPin_;
   iDirPin = iDirPin_;
+
   iDelay = iDelay_;
-  
+
+  ulLastUpdate = millis();
+
   dSpdPWMScale = iMaxPWM_ / 255.0;
-  
+
   pinMode(iPWMPin_, OUTPUT);
   pinMode(iDirPin_, OUTPUT);
 }
 
 void motor_controller::increaseSpeed(void)
 {
-  iSpd++;
-  
-  if(iSpd > 100)
-  {
-    // Not allowed to exceed 100%
-    iSpd = 100;
-  }
-  else
-  {
-    changeSpeed(iSpd);
-  }
+   setSpeed(iCurrentSpd + 1);
 }
 
 void motor_controller::decreaseSpeed(void)
 {
-  iSpd--;
-  
-  if(iSpd < -100)
-  {
-    // Not allowed to exceed -100%
-    iSpd = -100;
-  }
-  else
-  {
-    changeSpeed(iSpd);
-  }
+   setSpeed(iCurrentSpd - 1);
 }
 
 void motor_controller::setSpeed(int iSpd_)
 {
-  int iSpdDelta = iSpd_ - iSpd;
-  
   if(iSpd_ > 100)
   {
-    iSpd_ = 100;
+    iSetSpd = 100;
   }
   else if(iSpd_ < -100)
   {
-    iSpd_  = -100;
+     iSetSpd  = -100;
   }
   else
   {
-    // Intentional do-nothing
+     iSetSpd = iSpd_;
   }
-  
-  do
-  {
-    iSpdDelta = iSpd_ - iSpd;
-    
-    if(iSpdDelta > 0)
-    {
-      increaseSpeed();
-    }
-    else if(iSpdDelta < 0)
-    {
-      decreaseSpeed();
-    }
-    else
-    {
-      // Intentional do-nothing
-    }
-  } while(iSpdDelta != 0);
 }
 
 void motor_controller::stop(void)
@@ -92,26 +57,22 @@ void motor_controller::stop(void)
 
 void motor_controller::emergencyStop(void)
 {
-  changeSpeed(0);
+   changeSpeed(0);
 }
 
 void motor_controller::changeSpeed(int iSpd_)
 {
   int iPWMVal = iSpd_ * dSpdPWMScale;
-  
-  // we only allow delays greater than 0, this will make it look like the motor has momentum
-  if(iDelay > 0)
-  {
-    delay(iDelay);
-  }
-  
+
+  iCurrentSpd = iSpd_;
+
   // Check the current speed and see if we need to adjust the direction pins
-  if(iSpd_ > 0)
+  if(iCurrentSpd > 0)
   {
     // Write direction pins so the motor is going forward
     digitalWrite(iDirPin, HIGH);
   }
-  else if(iSpd_ < 0)
+  else if(iCurrentSpd < 0)
   {
     // Write direction pin so the motor is going backward
     digitalWrite(iDirPin, LOW);
@@ -120,12 +81,42 @@ void motor_controller::changeSpeed(int iSpd_)
   {
     // Motor should be stopped at this point direction pin doesn't have to change
   }
-  
+
   // output the current pwm
   analogWrite(iPWMPin, iPWMVal);
 }
 
 int motor_controller::getSpeed(void)
 {
-	return iSpd;
+	// return current speed
+	return iCurrentSpd;
+}
+
+void motor_controller::updateThrottle(void)
+{
+   if((millis() - ulLastUpdate) > iDelay)
+   {
+      int iSpdDelta = iSetSpd - iCurrentSpd;
+
+      if(iSpdDelta > 0)
+      {
+         changeSpeed(iCurrentSpd + 1);
+
+         Serial.print("Throttle speed: ");
+         Serial.println(iCurrentSpd, DEC);
+      }
+      else if(iSpdDelta < 0)
+      {
+         changeSpeed(iCurrentSpd - 1);
+
+         Serial.print("Throttle speed: ");
+         Serial.println(iCurrentSpd, DEC);
+      }
+      else
+      {
+         // Motor is stopped do nothing
+      }
+
+      ulLastUpdate = millis();
+   }
 }
