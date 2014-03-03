@@ -24,6 +24,11 @@ motor_controller::motor_controller(unsigned int uiPWMPin_, unsigned int uiDirPin
   pinMode(uiDirPin, OUTPUT);
 }
 
+void motor_controller::emergencyStop(void)
+{
+   changeSpeed(0);
+}
+
 void motor_controller::setSpeed(int iSpd_)
 {
   if(iSpd_ > 100)
@@ -40,41 +45,10 @@ void motor_controller::setSpeed(int iSpd_)
   }
 }
 
-void motor_controller::emergencyStop(void)
-{
-   changeSpeed(0);
-}
-
-void motor_controller::changeSpeed(int iSpd_)
-{
-  int iPWMVal = iSpd_ * dSpdPWMScale;
-
-  iCurrentSpd = iSpd_;
-
-  // Check the current speed and see if we need to adjust the direction pins
-  if(iCurrentSpd > 0)
-  {
-    // Write direction pins so the motor is going forward
-    digitalWrite(uiDirPin, HIGH);
-  }
-  else if(iCurrentSpd < 0)
-  {
-    // Write direction pin so the motor is going backward
-    digitalWrite(uiDirPin, LOW);
-  }
-  else
-  {
-    // Motor should be stopped at this point direction pin doesn't have to change
-  }
-
-  // output the current pwm
-  analogWrite(uiPWMPin, iPWMVal);
-}
-
 int motor_controller::getCurrentSpeed(void)
 {
-	// return current speed
-	return iCurrentSpd;
+   // return current speed
+   return iCurrentSpd;
 }
 
 int motor_controller::getSetSpeed(void)
@@ -104,9 +78,35 @@ void motor_controller::update(void)
       }
       else
       {
-         // Motor is stopped do nothing
+         // Motor is already running at the correct speed/direction
       }
 
       ulLastUpdate = millis();
    }
+}
+
+void motor_controller::changeSpeed(int iSpd_)
+{
+  int iPWMVal = iSpd_ * dSpdPWMScale;
+
+  iCurrentSpd = iSpd_;
+
+  // Check the current speed and see if we need to adjust the direction pins
+  if(iCurrentSpd > 0)
+  {
+    // Write direction pins so the motor is going forward
+    digitalWrite(uiDirPin, HIGH);
+  }
+  else if(iCurrentSpd < 0)
+  {
+    // Write direction pin so the motor is going backward
+    digitalWrite(uiDirPin, LOW);
+  }
+  else
+  {
+    // Motor should be stopped at this point direction pin doesn't have to change
+  }
+
+  // output the current pwm
+  analogWrite(uiPWMPin, iPWMVal);
 }
