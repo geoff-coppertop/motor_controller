@@ -82,7 +82,7 @@ int motor_controller::getSetSpeed(void)
    return iSetSpd;
 }
 
-void motor_controller::updateThrottle(void)
+void motor_controller::update(void)
 {
    if((millis() - ulLastUpdate) > iDelay)
    {
