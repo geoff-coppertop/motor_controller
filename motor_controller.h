@@ -11,19 +11,18 @@
 class motor_controller
 {
   public:
-    motor_controller(int iPWMPin_, int iDirPin_, int iMaxPWM_, int iDelay_);
+    motor_controller(unsigned int uiPWMPin_, unsigned int uiDirPin_, int iMaxPWM_, int iDelay_);
 
-    void stop(void);
     void emergencyStop(void);
-    void increaseSpeed(void);
-    void decreaseSpeed(void);
     void setSpeed(int iSpd_);
-    int getSpeed(void);
+    int getCurrentSpeed(void);
+    int getSetSpeed(void);
     void updateThrottle(void);
 
   private:
-    int iPWMPin;
-    int iDirPin;
+    unsigned int uiPWMPin;
+    unsigned int uiDirPin;
+
     int iCurrentSpd;
     int iSetSpd;
     int iDelay;

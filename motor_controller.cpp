@@ -6,13 +6,13 @@
 #include "Arduino.h"
 #include "motor_controller.h"
 
-motor_controller::motor_controller(int iPWMPin_, int iDirPin_, int iMaxPWM_, int iDelay_)
+motor_controller::motor_controller(unsigned int uiPWMPin_, unsigned int uiDirPin_, int iMaxPWM_, int iDelay_)
 {
   iCurrentSpd = 0;
   iSetSpd = 0;
 
-  iPWMPin = iPWMPin_;
-  iDirPin = iDirPin_;
+  uiPWMPin = uiPWMPin_;
+  uiDirPin = uiDirPin_;
 
   iDelay = iDelay_;
 
@@ -20,18 +20,8 @@ motor_controller::motor_controller(int iPWMPin_, int iDirPin_, int iMaxPWM_, int
 
   dSpdPWMScale = iMaxPWM_ / 255.0;
 
-  pinMode(iPWMPin_, OUTPUT);
-  pinMode(iDirPin_, OUTPUT);
-}
-
-void motor_controller::increaseSpeed(void)
-{
-   setSpeed(iCurrentSpd + 1);
-}
-
-void motor_controller::decreaseSpeed(void)
-{
-   setSpeed(iCurrentSpd - 1);
+  pinMode(uiPWMPin, OUTPUT);
+  pinMode(uiDirPin, OUTPUT);
 }
 
 void motor_controller::setSpeed(int iSpd_)
@@ -50,11 +40,6 @@ void motor_controller::setSpeed(int iSpd_)
   }
 }
 
-void motor_controller::stop(void)
-{
-  setSpeed(0);
-}
-
 void motor_controller::emergencyStop(void)
 {
    changeSpeed(0);
@@ -70,12 +55,12 @@ void motor_controller::changeSpeed(int iSpd_)
   if(iCurrentSpd > 0)
   {
     // Write direction pins so the motor is going forward
-    digitalWrite(iDirPin, HIGH);
+    digitalWrite(uiDirPin, HIGH);
   }
   else if(iCurrentSpd < 0)
   {
     // Write direction pin so the motor is going backward
-    digitalWrite(iDirPin, LOW);
+    digitalWrite(uiDirPin, LOW);
   }
   else
   {
@@ -83,13 +68,18 @@ void motor_controller::changeSpeed(int iSpd_)
   }
 
   // output the current pwm
-  analogWrite(iPWMPin, iPWMVal);
+  analogWrite(uiPWMPin, iPWMVal);
 }
 
-int motor_controller::getSpeed(void)
+int motor_controller::getCurrentSpeed(void)
 {
 	// return current speed
 	return iCurrentSpd;
+}
+
+int motor_controller::getSetSpeed(void)
+{
+   return iSetSpd;
 }
 
 void motor_controller::updateThrottle(void)
