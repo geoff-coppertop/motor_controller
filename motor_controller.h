@@ -17,7 +17,7 @@ class motor_controller
     void setSpeed(int iSpd_);
     int getCurrentSpeed(void);
     int getSetSpeed(void);
-    void updateThrottle(void);
+    void update(void);
 
   private:
     unsigned int uiPWMPin;
